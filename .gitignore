@@ -1,0 +1,11 @@
+out.*
+test*
+
+__pycache__
+*.pyc
+
+.env
+venv/
+
+poetry*
+*.toml
