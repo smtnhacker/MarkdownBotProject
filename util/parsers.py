@@ -60,7 +60,7 @@ def md2html(content):
         with os.fdopen(fd_md, 'w') as md_file:
             md_file.write(content)
 
-        subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex", shell=True)
+        subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/svg.latex?", shell=True)
 
         with os.fdopen(fd_ht, 'r') as html_file:
             html_code = html_file.read()
