@@ -49,7 +49,7 @@ def pdf2img(binary):
     finally:
         os.remove(path_pdf)
 
-def md2html(content):
+def md2html(content, weird_large):
 
     html_code = ''
 
@@ -60,7 +60,10 @@ def md2html(content):
         with os.fdopen(fd_md, 'w') as md_file:
             md_file.write(content)
 
-        subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/svg.latex?", shell=True)
+        if weird_large:
+            subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/png.latex?%5Cdpi{{150}}", shell=True)
+        else:
+            subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/svg.latex?", shell=True)
 
         with os.fdopen(fd_ht, 'r') as html_file:
             html_code = html_file.read()
@@ -114,12 +117,12 @@ def html2img(html_code):
     
     yield 0, jpg_binary
 
-def md2img(content : str):
-    html_code = md2html(content)
+def md2img(content : str, weird_large=False):
+    html_code = md2html(content, weird_large)
     pdf_binary = html2pdf(html_code)
     # pdf_binary = md2pdf(content)
     yield from pdf2img(pdf_binary)
 
-def md2imgSingle(content : str):
-    html_code = md2html(content)
+def md2imgSingle(content : str, weird_large=False):
+    html_code = md2html(content, weird_large)
     yield from html2img(html_code)

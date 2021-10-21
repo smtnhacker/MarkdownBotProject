@@ -15,6 +15,8 @@ class CoreCog(commands.Cog, name = 'core'):
     # remove invalid shortcuts
     content = content.replace('\\rarr', '\\rightarrow')
 
+    # custom arguments
+
     if not 'numbered' in ctx.message.content.lower():
       content = '\pagenumbering{gobble}\n' + content
 
@@ -22,12 +24,16 @@ class CoreCog(commands.Cog, name = 'core'):
 
     single = True if 'single' in ctx.message.content.lower() else False
 
+    weird_large = True if 'weird-large' in ctx.message.content.lower() else False
+
     if single:
-      album = parsers.md2imgSingle(content)
+      album = parsers.md2imgSingle(content, weird_large=weird_large)
     else:
-      album = parsers.md2img(content)
+      album = parsers.md2img(content, weird_large=weird_large)
     
     print('PARSING: \n', content, '\n ------- END OF FILE -------')
+
+    # crop and return
 
     for idx, binary_pic in album:
       if crop:
