@@ -60,7 +60,7 @@ def md2html(content):
         with os.fdopen(fd_md, 'w') as md_file:
             md_file.write(content)
 
-        subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht}", shell=True)
+        subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex", shell=True)
 
         with os.fdopen(fd_ht, 'r') as html_file:
             html_code = html_file.read()
@@ -81,7 +81,7 @@ def html2pdf(html_code):
         with os.fdopen(fd_ht, 'w') as html_file:
             html_file.write(html_code)
 
-        subprocess.check_call(f"pandoc {path_ht} -f html -t pdf -s -o {path_pdf}", shell=True)
+        subprocess.check_call(f"wkhtmltopdf --enable-local-file-access {path_ht} {path_pdf}", shell=True)
 
         with os.fdopen(fd_pdf, 'rb') as pdf_file:
             pdf_binary = pdf_file.read()
@@ -92,5 +92,6 @@ def html2pdf(html_code):
     return pdf_binary
 
 def md2img(content : str):
-    pdf_binary = md2pdf(content)
+    html_code = md2html(content)
+    pdf_binary = html2pdf(html_code)
     yield from pdf2img(pdf_binary)

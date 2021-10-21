@@ -18,6 +18,10 @@ Engine used in rendering $\LaTeX$ (maybe). You can get it from distributions suc
 
 - [TeX Live](http://www.tug.org/texlive/)
 
+#### wkhtmltopdf
+
+Converts HTML to PDF that is capable of running JS to render LaTeX
+
 #### Poppler
 
 Contains necessary packages for the dependency [pdf2image](https://github.com/Belval/pdf2image) (Instructions on how to install is also there).
