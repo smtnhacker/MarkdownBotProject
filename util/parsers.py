@@ -49,7 +49,15 @@ def pdf2img(binary):
     finally:
         os.remove(path_pdf)
 
-def md2html(content, weird_large):
+def pdf2imgLink(path_pdf):
+    print(path_pdf)
+    with tempfile.TemporaryDirectory() as path:
+        pages = convert_from_path(path_pdf, 500, fmt='jpeg', output_folder=path)
+        for idx, page in enumerate(pages):
+            print(idx, page)
+            yield idx, pil2jpg(page)
+
+def md2html(content, weird_large, katex):
 
     html_code = ''
 
@@ -60,7 +68,9 @@ def md2html(content, weird_large):
         with os.fdopen(fd_md, 'w') as md_file:
             md_file.write(content)
 
-        if weird_large:
+        if katex:
+            subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --katex", shell=True)
+        elif weird_large:
             subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/png.latex?%5Cdpi{{150}}", shell=True)
         else:
             subprocess.check_call(f"pandoc {path_md} -f markdown -t html -s -o {path_ht} --webtex=https://latex.codecogs.com/svg.latex?", shell=True)
@@ -117,12 +127,12 @@ def html2img(html_code):
     
     yield 0, jpg_binary
 
-def md2img(content : str, weird_large=False):
-    html_code = md2html(content, weird_large)
+def md2img(content : str, weird_large=False, katex=False):
+    html_code = md2html(content, weird_large, katex)
     pdf_binary = html2pdf(html_code)
     # pdf_binary = md2pdf(content)
     yield from pdf2img(pdf_binary)
 
-def md2imgSingle(content : str, weird_large=False):
-    html_code = md2html(content, weird_large)
+def md2imgSingle(content : str, weird_large=False, katex=False):
+    html_code = md2html(content, weird_large, katex)
     yield from html2img(html_code)

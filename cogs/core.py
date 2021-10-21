@@ -21,15 +21,14 @@ class CoreCog(commands.Cog, name = 'core'):
       content = '\pagenumbering{gobble}\n' + content
 
     crop = False if 'uncrop' in ctx.message.content.lower() else True
-
     single = True if 'single' in ctx.message.content.lower() else False
-
     weird_large = True if 'weird-large' in ctx.message.content.lower() else False
+    katex = True if 'katex' in ctx.message.content.lower() else False
 
     if single:
-      album = parsers.md2imgSingle(content, weird_large=weird_large)
+      album = parsers.md2imgSingle(content, weird_large=weird_large, katex=katex)
     else:
-      album = parsers.md2img(content, weird_large=weird_large)
+      album = parsers.md2img(content, weird_large=weird_large, katex=katex)
     
     print('PARSING: \n', content, '\n ------- END OF FILE -------')
 
@@ -58,6 +57,10 @@ class CoreCog(commands.Cog, name = 'core'):
       - single
           Creates a single image, but of better quality! Uses
           KaTex as Math renderer
+      - weird-large
+          Uses a lower quality renderer for a less error-prone
+          output. The increased size is to increase the
+          readability of the output
       
     Note: It is recommended to put the message in a markdown
     codeblock to ensure that TeXit does not catch LaTex snippets.
@@ -99,6 +102,10 @@ class CoreCog(commands.Cog, name = 'core'):
       - single
           Creates a single image, but of better quality! Uses
           KaTex as Math renderer
+      - weird-large
+          Uses a lower quality renderer for a less error-prone
+          output. The increased size is to increase the
+          readability of the output
     
     Note: Some formats might not be currently supported. To raise
     this issue, please contact the mods!
@@ -111,6 +118,22 @@ class CoreCog(commands.Cog, name = 'core'):
 
       await self._send_md2pdf(ctx, content)
 
+    except Exception as e:
+      exception = f'{type(e).__name__}: {e}'
+      print(exception)
+      await ctx.channel.send('Invalid file. It might contain shortcuts not currently accounted for')
+  
+  @commands.command(aliases=['dp'])
+  async def dumppdf(self, ctx, link=None):
+
+    if not link:
+      link = ctx.message.attachments[0].url
+
+    # get attachment
+    try:
+      for idx, binary_pic in parsers.pdf2imgLink(link):
+        picture = nextcord.File(fp=binary_pic, filename=f'img_{idx}.jpg')
+        await ctx.channel.send(file=picture)
     except Exception as e:
       exception = f'{type(e).__name__}: {e}'
       print(exception)
