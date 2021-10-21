@@ -1,4 +1,4 @@
-from discord.ext import commands
+from nextcord.ext import commands
 import config
 
 class AdminCog(commands.Cog, name = 'admin'):

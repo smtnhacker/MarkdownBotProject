@@ -1,5 +1,5 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 import util.parsers as parsers
 import util.image as imageUtil
@@ -31,7 +31,7 @@ class CoreCog(commands.Cog, name = 'core'):
     for idx, binary_pic in album:
       if crop:
         binary_pic = imageUtil.trimSpaces(binary_pic)
-      picture = discord.File(fp=binary_pic, filename=f'img_{idx}.jpg')
+      picture = nextcord.File(fp=binary_pic, filename=f'img_{idx}.jpg')
       await ctx.channel.send(file=picture)
   
   @commands.command(aliases=['c'])

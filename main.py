@@ -1,8 +1,8 @@
 import os, sys, asyncio, platform
 from dotenv import load_dotenv
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 import config
 
@@ -11,13 +11,12 @@ bot = commands.Bot(command_prefix=config.BOT_PREFIX)
 @bot.event
 async def on_ready():
   print('We have logged in as {0.user}'.format(bot))
-  await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="?start"))
+  await bot.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.listening, name="?start"))
 
 @bot.command()
 async def start(ctx):
-  embed = discord.Embed(
+  embed = nextcord.Embed(
     title = "Welcome to Markdown to Image",
-    author = "ChambaBois",
     color = 0xecffa8,
   )
   embed.add_field(
@@ -25,6 +24,7 @@ async def start(ctx):
     value = "`?conv` - to start converting",
     inline = False,
   )
+  embed.set_author(name='Chamba Bois')
   await ctx.send(embed = embed)
 
 if __name__ == '__main__':
