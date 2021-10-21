@@ -13,6 +13,11 @@ Things to look for:
 - PNG vs SVG (for WebTex)
 - Normal vs Large (for WebTex)
 
+## Image Processing
+
+- [ ] **Cropping**
+    Improve the cropping by adding threshold on removing background and adding a small margin for readability.
+
 ## Discord Interaction
 
 - [ ] **Image Pagination**
