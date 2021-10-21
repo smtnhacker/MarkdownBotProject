@@ -31,3 +31,7 @@ Things to look for:
 ## Quiz Feature
 
 Might be useful since the bot renders markdown.
+
+## Collaborative Markdown Editing
+
+Since the displayed renders would be seen by the public, it might be a good idea to give more than one person the permission to edit the files.
