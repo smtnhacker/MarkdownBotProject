@@ -3,6 +3,7 @@ from nextcord.ext import commands
 
 import util.parsers as parsers
 import util.image as imageUtil
+import util.auth as auth
 
 class CoreCog(commands.Cog, name = 'core'):
   def __init__(self, bot):
@@ -58,7 +59,7 @@ class CoreCog(commands.Cog, name = 'core'):
     """
 
     await ctx.channel.send('Please enter Markdown code:')
-    msg = await self.bot.wait_for('message', timeout = 120)
+    msg = await auth.wait_response(self.bot, ctx, ctx.message.author, 120) 
     
     content_raw = msg.content
     
