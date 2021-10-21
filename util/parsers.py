@@ -91,7 +91,35 @@ def html2pdf(html_code):
 
     return pdf_binary
 
+def html2img(html_code):
+    "Currently returns a single long image"
+
+    fd_ht, path_ht = tempfile.mkstemp(suffix='.html')
+    fd_im, path_im = tempfile.mkstemp(suffix='.jpg')
+
+    try:
+        with os.fdopen(fd_ht, 'w') as html_file:
+            html_file.write(html_code)
+        
+        subprocess.check_call(f'wkhtmltoimage --enable-local-file-access {path_ht} {path_im}', shell=True)
+
+        print(f'trying to read {path_im}')
+        jpg_binary = io.BytesIO()
+        with os.fdopen(fd_im, 'rb') as jpg_file:
+            jpg_binary.write(jpg_file.read())
+    
+    finally:
+        os.remove(path_ht)
+        os.remove(path_im)
+    
+    yield 0, jpg_binary
+
 def md2img(content : str):
     html_code = md2html(content)
     pdf_binary = html2pdf(html_code)
+    # pdf_binary = md2pdf(content)
     yield from pdf2img(pdf_binary)
+
+def md2imgSingle(content : str):
+    html_code = md2html(content)
+    yield from html2img(html_code)

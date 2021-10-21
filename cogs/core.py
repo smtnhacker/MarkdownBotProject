@@ -13,14 +13,22 @@ class CoreCog(commands.Cog, name = 'core'):
 
     # remove invalid shortcuts
     content = content.replace('\\rarr', '\\rightarrow')
-    print(content)
 
-    if not 'numbered' in ctx.message.content:
+    if not 'numbered' in ctx.message.content.lower():
       content = '\pagenumbering{gobble}\n' + content
 
-    crop = False if 'uncrop' in ctx.message.content else True
+    crop = False if 'uncrop' in ctx.message.content.lower() else True
 
-    for idx, binary_pic in parsers.md2img(content):
+    single = True if 'single' in ctx.message.content.lower() else False
+
+    if single:
+      album = parsers.md2imgSingle(content)
+    else:
+      album = parsers.md2img(content)
+    
+    print('PARSING: \n', content, '\n ------- END OF FILE -------')
+
+    for idx, binary_pic in album:
       if crop:
         binary_pic = imageUtil.trimSpaces(binary_pic)
       picture = discord.File(fp=binary_pic, filename=f'img_{idx}.jpg')
@@ -40,6 +48,9 @@ class CoreCog(commands.Cog, name = 'core'):
           sure to add uncrop to ensure that the size is A4
       - uncrop
           Makes the image A4 sized
+      - single
+          Creates a single image, but of better quality! Uses
+          KaTex as Math renderer
       
     Note: It is recommended to put the message in a markdown
     codeblock to ensure that TeXit does not catch LaTex snippets.
@@ -66,6 +77,25 @@ class CoreCog(commands.Cog, name = 'core'):
   
   @commands.command(aliases=['cc'])
   async def cconv(self, ctx):
+    """
+    Markdown Files to JPEG Conversion
+
+    Command Format:
+      ?conv [optional arguments]
+      
+      Possible arguments:
+      - numbered
+          Adds a page number to the bottom of the page. Make
+          sure to add uncrop to ensure that the size is A4
+      - uncrop
+          Makes the image A4 sized
+      - single
+          Creates a single image, but of better quality! Uses
+          KaTex as Math renderer
+    
+    Note: Some formats might not be currently supported. To raise
+    this issue, please contact the mods!
+    """
 
     # get attachment
     try:
